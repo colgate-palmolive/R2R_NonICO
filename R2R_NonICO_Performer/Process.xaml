@@ -1,0 +1,1071 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Process" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property sap2010:Annotation.AnnotationText="Transaction item to be processed." Name="in_TransactionItem" Type="InArgument(ui:QueueItem)" />
+    <x:Property sap2010:Annotation.AnnotationText="Dictionary structure to store configuration data of the process (settings, constants and assets)." Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="outTempInstance" Type="InOutArgument(x:String)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1634,3340.66666666667</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>ProcessTransaction_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="25">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>Microsoft.VisualBasic.CompilerServices</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Activities.DynamicUpdate</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="22">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualStudio.Services.Common</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationCore</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities.Design</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Invoke major steps of the business process, which are usually implemented by multiple subworkflows.&#xA;&#xA;If a BusinessRuleException is thrown, the transaction is skipped. &#xA;If another kind of exception occurs, the current transaction can be retried. " DisplayName="Process" sap:VirtualizedContainerService.HintSize="1644,3176" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Default="[in_Config(&quot;BillOutSAPSystem&quot;).ToString]" Name="strBillOutSAPSystem" />
+      <Variable x:TypeArguments="x:String" Name="tCode" />
+      <Variable x:TypeArguments="x:String" Name="tempInstance" />
+      <Variable x:TypeArguments="x:String" Name="strSAPBillinDocNo" />
+      <Variable x:TypeArguments="x:String" Name="strSAPBillOutDocNo" />
+      <Variable x:TypeArguments="x:String" Name="outputBilloutdocNumberMessage" />
+      <Variable x:TypeArguments="x:String" Name="outputF62pdfFilePath" />
+      <Variable x:TypeArguments="x:String" Name="strF62pdfFileIDinGDrive" />
+      <Variable x:TypeArguments="x:String" Name="strSrNo" />
+      <Variable x:TypeArguments="x:String" Name="strCustomerInvoiceOrCreditMemo" />
+      <Variable x:TypeArguments="x:String" Name="strBillOutCompanyCode" />
+      <Variable x:TypeArguments="x:String" Name="strBillInCompanyCode" />
+      <Variable x:TypeArguments="x:String" Name="strCustomerID" />
+      <Variable x:TypeArguments="x:String" Name="strVendorID" />
+      <Variable x:TypeArguments="x:String" Name="strInvoiceDate" />
+      <Variable x:TypeArguments="x:String" Name="strReferenceColumn" />
+      <Variable x:TypeArguments="x:String" Name="strPostingDate" />
+      <Variable x:TypeArguments="x:String" Name="strTotalBillOutInvoiceAmount" />
+      <Variable x:TypeArguments="x:String" Name="strCurrency" />
+      <Variable x:TypeArguments="x:String" Name="strTextOrDocHeaderText" />
+      <Variable x:TypeArguments="x:String" Name="strRowNumber" />
+      <Variable x:TypeArguments="x:String" Name="strCombinedValue" />
+      <Variable x:TypeArguments="x:String" Name="outputBilloutdocNumber" />
+      <Variable x:TypeArguments="x:String" Name="outputF62pdfFileName" />
+      <Variable x:TypeArguments="x:String" Name="outputBillindocNumberMessage" />
+      <Variable x:TypeArguments="x:String" Name="outputBillindocNumber" />
+      <Variable x:TypeArguments="x:String" Name="outputBillInErrorMessage" />
+      <Variable x:TypeArguments="x:String" Name="outputBillOutErrorMessage" />
+      <Variable x:TypeArguments="x:String" Name="strSAPBilloutDocNoTransactionItem" />
+      <Variable x:TypeArguments="x:String" Name="strOutputF62GoogleDriveFolderID" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:CommentOut DisplayName="Comment Out - Assign Transaction item fields" sap:VirtualizedContainerService.HintSize="1602,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_7">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="346,3408" sap2010:WorkflowViewState.IdRef="Sequence_11">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Sequence DisplayName="Assign Transaction item fields" sap:VirtualizedContainerService.HintSize="304,3316" sap2010:WorkflowViewState.IdRef="Sequence_2">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_1">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillOutSAPSystem]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">LAT</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_2">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strAODocsID]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("AODocsID").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_3">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strSendingSubsidaryCompanyCode]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SendingSubsidaryCompanyCode").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_4">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strSAPCustomerID]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPCustomerID").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_5">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strReceivingSubsidaryCompanyCode]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("ReceivingSubsidaryCompanyCode").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_6">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strSAPVendorID]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPVendorID").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_7">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strSendingSubsidaryCurrency]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SendingSubsidaryCurrency").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_8">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strApprovingPerson]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("ApprovingPerson").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_9">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutGLAccount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutGLAccount").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_10">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutCostCenter]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutCostCenter").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_14">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutInternalOrder]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutInternalOrder").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_15">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutTaxCode]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutTaxCode").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_16">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutDescription]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutDescription").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_17">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutAmount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutAmount").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_18">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBilloutTotalAmount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BilloutTotalAmount").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_19">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strInvoiceDate]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("InvoiceDate").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_20">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinGLAccount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinGLAccount").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_21">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinCostCenter]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinCostCenter").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_22">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinInternalOrder]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinInternalOrder").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_23">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinTaxCode]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinTaxCode").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_24">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinDescription]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinDescription").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_25">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinAmount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinAmount").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_26">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strBillinTotalAmount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillinTotalAmount").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_27">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strReceivingSubsidaryCurrency]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("ReceivingSubsidaryCurrency").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_28">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strCreationDate]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("CreationDate").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_29">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strCreator]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("Creator").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_30">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strSAPBillinDocNo]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPBillinDocNo").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_31">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strSAPBillOutDocNo]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPBillOutDocNo").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_32">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strPostingDate]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("PostingDate").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_33">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strTypeofBillout]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("TypeofBillout").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_34">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strId]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("Id").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_35">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[strHash]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("hash").ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+          </Sequence>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <Sequence sap:VirtualizedContainerService.HintSize="1602,1012" sap2010:WorkflowViewState.IdRef="Sequence_18">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="x:Boolean" Name="sapEasyScreenExist" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DelayMS="1000" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="522,117.333333333333" sap2010:WorkflowViewState.IdRef="SendHotkey_3" Key="f12" KeyModifiers="None" SpecialKey="True">
+        <ui:SendHotkey.Target>
+          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="a60c7237-a0f0-40cf-b850-f8338b99c514">
+            <ui:Target.TimeoutMS>
+              <InArgument x:TypeArguments="x:Int32" />
+            </ui:Target.TimeoutMS>
+            <ui:Target.WaitForReady>
+              <InArgument x:TypeArguments="ui:WaitForReady" />
+            </ui:Target.WaitForReady>
+          </ui:Target>
+        </ui:SendHotkey.Target>
+      </ui:SendHotkey>
+      <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DelayMS="1000" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="522,117.333333333333" sap2010:WorkflowViewState.IdRef="SendHotkey_4" Key="f12" KeyModifiers="None" SpecialKey="True">
+        <ui:SendHotkey.Target>
+          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="83399d4e-3249-46c8-8783-7c5ab1a953ae">
+            <ui:Target.TimeoutMS>
+              <InArgument x:TypeArguments="x:Int32" />
+            </ui:Target.TimeoutMS>
+            <ui:Target.WaitForReady>
+              <InArgument x:TypeArguments="ui:WaitForReady" />
+            </ui:Target.WaitForReady>
+          </ui:Target>
+        </ui:SendHotkey.Target>
+      </ui:SendHotkey>
+      <ui:UiElementExists DisplayName="Element Exists 'saplogon.exe Enter'" Exists="[sapEasyScreenExist]" sap:VirtualizedContainerService.HintSize="522,106" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
+        <ui:UiElementExists.Target>
+          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="0e4bf51f-67c6-4196-86d4-f1a7b6c57591" InformativeScreenshot="23e5004a24629236c3a89cf490b4afc8" Selector="&lt;wnd app='saplogon.exe' cls='SAP_FRONTEND_SESSION' title='SAP Easy*' /&gt;&lt;sap id='tbar[0]/okcd' /&gt;" TimeoutMS="10000" WaitForReady="INTERACTIVE" />
+        </ui:UiElementExists.Target>
+      </ui:UiElementExists>
+      <If Condition="[sapEasyScreenExist = False]" sap:VirtualizedContainerService.HintSize="522,459.333333333333" sap2010:WorkflowViewState.IdRef="If_6">
+        <If.Then>
+          <Sequence sap:VirtualizedContainerService.HintSize="376,305.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_19">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_26" UnSafe="False" WorkflowFileName="KillSAP.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <scg:Dictionary x:TypeArguments="x:String, Argument" />
+              </ui:InvokeWorkflowFile.Arguments>
+            </ui:InvokeWorkflowFile>
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_25" UnSafe="False" WorkflowFileName="InitApp\LoginToSAPProcessData.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_SapSystemName">[in_Config("BillOutSAPSystem").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCAP">[in_Config("S2P_SAP_SERVICEID_CAP").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCCP">[in_Config("S2P_SAP_SERVICEID_CCP").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameHUP">[in_Config("S2P_SAP_SERVICEID_HUP").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameLAP">[in_Config("R2R_SAP_SERVICEID_LAP").ToString]</InArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+            </ui:InvokeWorkflowFile>
+          </Sequence>
+        </If.Then>
+      </If>
+    </Sequence>
+    <ui:MultipleAssign DisplayName="Multiple Assign Transaction item fields" sap:VirtualizedContainerService.HintSize="1602,52.6666666666667" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+      <ui:MultipleAssign.AssignOperations>
+        <scg:List x:TypeArguments="ui:AssignOperation" Capacity="32">
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strSrNo]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SrNo").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strCustomerInvoiceOrCreditMemo]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("CustomerInvoiceOrCreditMemo").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_3">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strBillOutCompanyCode]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillOutCompanyCode").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_4">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strBillInCompanyCode]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("BillInCompanyCode").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_5">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strCustomerID]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("CustomerID").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_6">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strVendorID]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("VendorID").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_7">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strInvoiceDate]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("InvoiceDate").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_8">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strReferenceColumn]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("ReferenceColumn").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_9">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strPostingDate]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("PostingDate").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_10">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strTotalBillOutInvoiceAmount]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("TotalBillOutInvoiceAmount").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_11">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strCurrency]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("Currency").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_12">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strTextOrDocHeaderText]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("TextOrDocHeaderText").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_13">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strRowNumber]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("RowNumber").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_14">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strCombinedValue]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("CombinedValue").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_15">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strSAPBillOutDocNo]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPBilloutDocNo").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_16">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strSAPBillinDocNo]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPBillInDocNo").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_17">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[strSAPBilloutDocNoTransactionItem]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_TransactionItem.SpecificContent("SAPBilloutDocNo").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+        </scg:List>
+      </ui:MultipleAssign.AssignOperations>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:MultipleAssign>
+    <ui:CommentOut DisplayName="Comment Out - If Instance is same" sap:VirtualizedContainerService.HintSize="1602,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="840,144.666666666667" sap2010:WorkflowViewState.IdRef="Sequence_5">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If Condition="[outTempInstance = strBillOutSAPSystem]" DisplayName="If Instance is same" sap:VirtualizedContainerService.HintSize="200,52.6666666666667" sap2010:WorkflowViewState.IdRef="If_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <Sequence sap:VirtualizedContainerService.HintSize="376,366.666666666667" sap2010:WorkflowViewState.IdRef="Sequence_4">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DelayMS="3000" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="334,117.333333333333" sap2010:WorkflowViewState.IdRef="SendHotkey_1" Key="f12" KeyModifiers="None" SpecialKey="True">
+                  <ui:SendHotkey.Target>
+                    <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="607a9cb0-b285-4aa3-8edb-b79c95b9ffee">
+                      <ui:Target.TimeoutMS>
+                        <InArgument x:TypeArguments="x:Int32" />
+                      </ui:Target.TimeoutMS>
+                      <ui:Target.WaitForReady>
+                        <InArgument x:TypeArguments="ui:WaitForReady" />
+                      </ui:Target.WaitForReady>
+                    </ui:Target>
+                  </ui:SendHotkey.Target>
+                </ui:SendHotkey>
+                <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DelayMS="3000" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="334,117.333333333333" sap2010:WorkflowViewState.IdRef="SendHotkey_2" Key="f12" KeyModifiers="None" SpecialKey="True">
+                  <ui:SendHotkey.Target>
+                    <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="71e94964-ead7-44c1-96d2-df3a071c7469">
+                      <ui:Target.TimeoutMS>
+                        <InArgument x:TypeArguments="x:Int32" />
+                      </ui:Target.TimeoutMS>
+                      <ui:Target.WaitForReady>
+                        <InArgument x:TypeArguments="ui:WaitForReady" />
+                      </ui:Target.WaitForReady>
+                    </ui:Target>
+                  </ui:SendHotkey.Target>
+                </ui:SendHotkey>
+              </Sequence>
+            </If.Then>
+            <If.Else>
+              <Sequence sap:VirtualizedContainerService.HintSize="376,410" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Assign sap:VirtualizedContainerService.HintSize="334,62" sap2010:WorkflowViewState.IdRef="Assign_11">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[outTempInstance]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[strBillOutSAPSystem]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="KillSAP.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,89.3333333333333" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="ProcessData\LoginToSAPProcessData.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_SapSystemName">[strBillOutSAPSystem]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_SapLogonExeLocation">[in_Config("SapLogonExeLocation").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCAP">[in_Config("S2P_SAP_SERVICEID_CAP").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCCP">[in_Config("S2P_SAP_SERVICEID_CCP").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameHUP">[in_Config("S2P_SAP_SERVICEID_HUP").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameLAP">[in_Config("S2P_SAP_SERVICEID_LAP").ToString]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+              </Sequence>
+            </If.Else>
+          </If>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="1602,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_24" UnSafe="False" WorkflowFileName="ProcessData\UpdateRunDateTimeinGoogleInputSheet.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_RunDateTime">[DateTime.Now.ToString]</InArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <If Condition="[strSAPBilloutDocNoTransactionItem = &quot;&quot; Or strSAPBilloutDocNoTransactionItem Is Nothing]" DisplayName="If - strSAPBilloutDocNoTransactionItem = &quot;&quot;" sap:VirtualizedContainerService.HintSize="1602,1548.66666666667" sap2010:WorkflowViewState.IdRef="If_4">
+      <If.Then>
+        <Sequence sap:VirtualizedContainerService.HintSize="709.333333333333,1394.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_16">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="667.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_9" UnSafe="False" WorkflowFileName="ProcessData\BillOutFB70.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="x:String" x:Key="in_BillOutTcodeInvoice">[in_Config("BillOutTcodeInvoice").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_BillOutTcodeCreditMemo">[in_Config("BillOutTcodeCreditMemo").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_CustomerID">[strCustomerID]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_BillOutCompanyCode">[strBillOutCompanyCode]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_CustomerInvoiceOrCreditMemo">[strCustomerInvoiceOrCreditMemo]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_InvoiceDate">[strInvoiceDate]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PostingDate">[strPostingDate]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_ReferenceColumn">[strReferenceColumn]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_TextOrDocHeaderText">[strTextOrDocHeaderText]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_TotalBillOutInvoiceAmount">[strTotalBillOutInvoiceAmount]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_Currency">[strCurrency]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_CombinedValue">[strCombinedValue]</InArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_BilloutDocNumberMessage">[outputBilloutdocNumberMessage]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_BilloutDocNumber">[outputBilloutdocNumber]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_BillOutErrorMessage">[outputBillOutErrorMessage]</OutArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_SrNo">[strSrNo]</InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+          <If Condition="[outputBillOutErrorMessage = &quot;&quot; Or outputBillOutErrorMessage Is Nothing]" DisplayName="If - outputBillOutErrorMessage = &quot;&quot;" sap:VirtualizedContainerService.HintSize="667.333333333333,1176" sap2010:WorkflowViewState.IdRef="If_2">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <Sequence sap:VirtualizedContainerService.HintSize="421.333333333333,1022" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="ProcessData\UpdateBillOutDocNoinGoogleInputSheet.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_BilloutDocNumberMessage">[outputBilloutdocNumberMessage]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_BilloutDocNumber">[outputBilloutdocNumber]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_10" UnSafe="False" WorkflowFileName="ProcessData\DownloadInvoiceFromSAPF62.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_BilloutDocNumber">[outputBilloutdocNumber]</InArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_OutputF62pdfFilePath">[outputF62pdfFilePath]</OutArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_OutputF62pdfFileLocation">[in_Config("OutputF62pdfFileLocation").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_BillOutCompanyCode">[strBillOutCompanyCode]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_DownloadInvoiceTcode">[in_Config("DownloadInvoiceTcode").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_SaveInvoiceTcode">[in_Config("SaveInvoiceTcode").ToString]</InArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_F62pdfFileName">[outputF62pdfFileName]</OutArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="379.333333333333,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_6">
+                  <ui:CommentOut.Body>
+                    <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="416,178.666666666667" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="374,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_12" UnSafe="False" WorkflowFileName="ProcessData\DownloadInvoiceFromSAPF62_Temp.xaml">
+                        <ui:InvokeWorkflowFile.Arguments>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_SendingSubsidaryCompanyCode">[strSendingSubsidaryCompanyCode]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_BilloutDocNumber">[outputBilloutdocNumberMessage]</InArgument>
+                          <OutArgument x:TypeArguments="x:String" x:Key="out_OutputF62pdfFilePath">[outputF62pdfFilePath]</OutArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_OutputF62pdfFileLocation">[in_Config("OutputF62pdfFileLocation").ToString]</InArgument>
+                        </ui:InvokeWorkflowFile.Arguments>
+                      </ui:InvokeWorkflowFile>
+                    </Sequence>
+                  </ui:CommentOut.Body>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:CommentOut>
+                <Switch x:TypeArguments="x:String" DisplayName="Switch - Assign Google drive Id based on Comp code" Expression="[strBillOutCompanyCode.ToUpper.Trim]" sap:VirtualizedContainerService.HintSize="379.333333333333,52.6666666666667" sap2010:WorkflowViewState.IdRef="Switch`1_2">
+                  <Switch.Default>
+                    <Assign sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_42">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[strOutputF62GoogleDriveFolderID]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[in_Config("OutputF62GoogleDriveFolderID_US05").ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </Switch.Default>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <Assign x:Key="USP1" sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_36">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strOutputF62GoogleDriveFolderID]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[in_Config("OutputF62GoogleDriveFolderID_USP1").ToString]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign x:Key="UST1" sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_37">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strOutputF62GoogleDriveFolderID]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[in_Config("OutputF62GoogleDriveFolderID_UST1").ToString]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign x:Key="CA01" sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_39">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strOutputF62GoogleDriveFolderID]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[in_Config("OutputF62GoogleDriveFolderID_CA01").ToString]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign x:Key="US05" sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_40">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strOutputF62GoogleDriveFolderID]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[in_Config("OutputF62GoogleDriveFolderID_US05").ToString]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign x:Key="US01" sap:VirtualizedContainerService.HintSize="262,62" sap2010:WorkflowViewState.IdRef="Assign_41">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strOutputF62GoogleDriveFolderID]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[in_Config("OutputF62GoogleDriveFolderID_US01").ToString]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                </Switch>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_11" UnSafe="False" WorkflowFileName="ProcessData\UploadF62pdfFiletoGoogleDrive.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">
+                      <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ServiceAccountEmail&quot;).ToString" />
+                    </InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">
+                      <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ServiceAccountJsonPath&quot;).ToString" />
+                    </InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_OutputF62pdfFilePath">
+                      <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="outputF62pdfFilePath" />
+                    </InArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_F62pdfFileIDinGDrive">
+                      <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="strF62pdfFileIDinGDrive" />
+                    </OutArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_OutputF62GDriveFolderID">
+                      <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="strOutputF62GoogleDriveFolderID" />
+                    </InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:CommentOut DisplayName="Comment Out - Attach invoice 'FB03'" sap:VirtualizedContainerService.HintSize="379.333333333333,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_8">
+                  <ui:CommentOut.Body>
+                    <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,178.666666666667" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_13" UnSafe="False" WorkflowFileName="ProcessData\AttachInvoiceToSAPFB03.xaml">
+                        <ui:InvokeWorkflowFile.Arguments>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_AttachInvoiceTcode">[in_Config("AttachInvoiceTcode").ToString]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_BillOutDocumentNo">[outputBilloutdocNumber]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_BillOutCompanyCode">[strBillOutCompanyCode]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_OutputF62pdfFileLocation">[in_Config("OutputF62pdfFileLocation").ToString]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_F62pdfFileName">[outputF62pdfFileName]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_AttachmentSuccessfulMessage">[in_Config("AttachmentSuccessfulMessage").ToString]</InArgument>
+                        </ui:InvokeWorkflowFile.Arguments>
+                      </ui:InvokeWorkflowFile>
+                    </Sequence>
+                  </ui:CommentOut.Body>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:CommentOut>
+                <ui:CommentOut DisplayName="Comment Out - Seq - if Bill in instance is different" sap:VirtualizedContainerService.HintSize="379.333333333333,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_9">
+                  <ui:CommentOut.Body>
+                    <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="418,397.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Sequence DisplayName="Seq - if Bill in instance is different" sap:VirtualizedContainerService.HintSize="376,305.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_17" UnSafe="False" WorkflowFileName="KillSAP.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                          </ui:InvokeWorkflowFile.Arguments>
+                        </ui:InvokeWorkflowFile>
+                        <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_18" UnSafe="False" WorkflowFileName="ProcessData\LoginToSAPProcessData.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_SapSystemName">LAT</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCAP">[in_Config("S2P_SAP_SERVICEID_CAP").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCCP">[in_Config("S2P_SAP_SERVICEID_CCP").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameHUP">[in_Config("S2P_SAP_SERVICEID_HUP").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameLAP">[in_Config("S2P_SAP_SERVICEID_LAP").ToString]</InArgument>
+                          </ui:InvokeWorkflowFile.Arguments>
+                        </ui:InvokeWorkflowFile>
+                      </Sequence>
+                    </Sequence>
+                  </ui:CommentOut.Body>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:CommentOut>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_14" UnSafe="False" WorkflowFileName="ProcessData\BillInFB60.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_BillInTcodeInvoice">[in_Config("BillInTcodeInvoice").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_BillInCompanyCode">[strBillInCompanyCode]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_VendorID">[strVendorID]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_InvoiceDate">[strInvoiceDate]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_PostingDate">[strPostingDate]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ReferenceColumn">[strReferenceColumn]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_TextOrDocHeaderText">[strTextOrDocHeaderText]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_TotalBillOutInvoiceAmount">[strTotalBillOutInvoiceAmount]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_Currency">[strCurrency]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_TaxAmountDropdownValue">[in_Config("TaxAmountDropdownValue").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CombinedValue">[strCombinedValue]</InArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_BillinDocNumberMessage">[outputBillindocNumberMessage]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_BillinDocNumber">[outputBillindocNumber]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String" x:Key="out_BillInErrorMessage">[outputBillInErrorMessage]</OutArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_SrNo">[strSrNo]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <If Condition="[outputBillInErrorMessage = &quot;&quot; Or outputBillInErrorMessage Is Nothing]" DisplayName="If - outputBillInErrorMessage = &quot;&quot; " sap:VirtualizedContainerService.HintSize="379.333333333333,52.6666666666667" sap2010:WorkflowViewState.IdRef="If_3">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <If.Then>
+                    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_16" UnSafe="False" WorkflowFileName="ProcessData\UpdateBillInDocNoinGoogleInputSheet.xaml">
+                      <ui:InvokeWorkflowFile.Arguments>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_BillinDocNumberMessage">[outputBillindocNumberMessage]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_BillinDocNumber">[outputBillindocNumber]</InArgument>
+                      </ui:InvokeWorkflowFile.Arguments>
+                    </ui:InvokeWorkflowFile>
+                  </If.Then>
+                  <If.Else>
+                    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_20" UnSafe="False" WorkflowFileName="ProcessData\UpdateBillOutBillInErrorMessageinGoogleInputSheet.xaml">
+                      <ui:InvokeWorkflowFile.Arguments>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_BillOutErrorMessage">[outputBillOutErrorMessage]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_BillInErrorMessage">[outputBillInErrorMessage]</InArgument>
+                      </ui:InvokeWorkflowFile.Arguments>
+                    </ui:InvokeWorkflowFile>
+                  </If.Else>
+                </If>
+              </Sequence>
+            </If.Then>
+            <If.Else>
+              <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="200,52.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_19" UnSafe="False" WorkflowFileName="ProcessData\UpdateBillOutBillInErrorMessageinGoogleInputSheet.xaml">
+                <ui:InvokeWorkflowFile.Arguments>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_BillOutErrorMessage">[outputBillOutErrorMessage]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_BillInErrorMessage">[outputBillInErrorMessage]</InArgument>
+                </ui:InvokeWorkflowFile.Arguments>
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+              </ui:InvokeWorkflowFile>
+            </If.Else>
+          </If>
+        </Sequence>
+      </If.Then>
+      <If.Else>
+        <Sequence sap:VirtualizedContainerService.HintSize="846.666666666667,459.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_17">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="804.666666666667,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_21" UnSafe="False" WorkflowFileName="ProcessData\BillInFB60.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="x:String" x:Key="in_BillInTcodeInvoice">[in_Config("BillInTcodeInvoice").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_BillInCompanyCode">[strBillInCompanyCode]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_VendorID">[strVendorID]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_InvoiceDate">[strInvoiceDate]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_PostingDate">[strPostingDate]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_ReferenceColumn">[strReferenceColumn]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_TextOrDocHeaderText">[strTextOrDocHeaderText]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_TotalBillOutInvoiceAmount">[strTotalBillOutInvoiceAmount]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_Currency">[strCurrency]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_TaxAmountDropdownValue">[in_Config("TaxAmountDropdownValue").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_CombinedValue">[strCombinedValue]</InArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_BillinDocNumberMessage">[outputBillindocNumberMessage]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_BillinDocNumber">[outputBillindocNumber]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_BillInErrorMessage">[outputBillInErrorMessage]</OutArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_SrNo">[strSrNo]</InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+          <If Condition="[outputBillInErrorMessage = &quot;&quot; Or outputBillInErrorMessage Is Nothing]" DisplayName="If - outputBillInErrorMessage = &quot;&quot; " sap:VirtualizedContainerService.HintSize="804.666666666667,240.666666666667" sap2010:WorkflowViewState.IdRef="If_5">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_22" UnSafe="False" WorkflowFileName="ProcessData\UpdateBillInDocNoinGoogleInputSheet.xaml">
+                <ui:InvokeWorkflowFile.Arguments>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_BillinDocNumberMessage">[outputBillindocNumberMessage]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_BillinDocNumber">[outputBillindocNumber]</InArgument>
+                </ui:InvokeWorkflowFile.Arguments>
+              </ui:InvokeWorkflowFile>
+            </If.Then>
+            <If.Else>
+              <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="379.333333333333,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_23" UnSafe="False" WorkflowFileName="ProcessData\UpdateBillOutBillInErrorMessageinGoogleInputSheet.xaml">
+                <ui:InvokeWorkflowFile.Arguments>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetID">[in_Config("GoogleRPAsheetID").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_GoogleRPAsheetName">[in_Config("GoogleRPAsheetName").ToString]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_RowNumber">[strRowNumber]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_BillOutErrorMessage">[outputBillOutErrorMessage]</InArgument>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_BillInErrorMessage">[outputBillInErrorMessage]</InArgument>
+                </ui:InvokeWorkflowFile.Arguments>
+              </ui:InvokeWorkflowFile>
+            </If.Else>
+          </If>
+        </Sequence>
+      </If.Else>
+    </If>
+  </Sequence>
+</Activity>

@@ -1,0 +1,345 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Initialize_Applications" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property sap2010:Annotation.AnnotationText="Dictionary structure to store configuration data of the process (settings, constants and assets)." Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="out_NewOutputFolderIDGDrive" Type="OutArgument(x:String)" />
+    <x:Property Name="out_strLastBusinessDayofPreviousMonth" Type="OutArgument(x:String)" />
+    <x:Property Name="out_strLastMonthYear" Type="OutArgument(x:String)" />
+    <x:Property Name="out_strLastMonthNumber" Type="OutArgument(x:String)" />
+    <x:Property Name="in_IsFirstRun" Type="InArgument(x:Boolean)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>396,638</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>Initialization_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="46">
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Management.Automation</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>System.Security</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Activities.DynamicUpdate</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>System.Runtime.InteropServices</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="38">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Management.Automation</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>TimeSpan2</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationCore</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Open applications used in the process and do necessary initialization procedures (e.g., login)." DisplayName="Initialize All Applications" sap:VirtualizedContainerService.HintSize="376,578" sap2010:WorkflowViewState.IdRef="Sequence_9">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="s:String[]" Default="[{&quot;CAP&quot;,&quot;CCP&quot;,&quot;HUP&quot;,&quot;LAP&quot;}]" Name="arrSapSystem" />
+      <Variable x:TypeArguments="x:String" Name="lastWorkingDayOfPreviousMonth" />
+      <Variable x:TypeArguments="x:String" Name="fXRatesSheetPath" />
+      <Variable x:TypeArguments="x:String" Name="lastMonthYear" />
+      <Variable x:TypeArguments="x:String" Name="lastMonthNumber" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:LogMessage DisplayName="Log message (Initialize applications)" sap:VirtualizedContainerService.HintSize="334,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;InitAPP - Opening applications...&quot;]" />
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_15" UnSafe="False" WorkflowFileName="Framework\CloseAllApplications.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_18" UnSafe="False" WorkflowFileName="InitApp\LoginToSAPProcessData.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="x:String" x:Key="in_SapSystemName">[in_Config("BillOutSAPSystem").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCAP">[in_Config("S2P_SAP_SERVICEID_CAP").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCCP">[in_Config("S2P_SAP_SERVICEID_CCP").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameHUP">[in_Config("S2P_SAP_SERVICEID_HUP").ToString]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameLAP">[in_Config("R2R_SAP_SERVICEID_LAP").ToString]</InArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:CommentOut DisplayName="Comment Out - GRIR" sap:VirtualizedContainerService.HintSize="334,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="414.666666666667,500" sap2010:WorkflowViewState.IdRef="Sequence_20">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="372.666666666667,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_14" UnSafe="False" WorkflowFileName="InitApp\CreateFolderforGRIRSheetsinGoogleDrive.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountEmail">[in_Config("ServiceAccountEmail").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_ServiceAccountJsonPath">[in_Config("ServiceAccountJsonPath").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_GoogleDriveOutputMainFolder">[in_Config("GoogleDriveOutputMainFolder").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_GoogleDriveOutputNewFolder">[in_Config("GoogleDriveOutputNewFolder").ToString]</InArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_NewOutputFolderID">[out_NewOutputFolderIDGDrive]</OutArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="372.666666666667,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_16" UnSafe="False" WorkflowFileName="InitApp\GetLastBusinessDayOfPreviousMonth.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_LastBusinessDayofPreviousMonth">[out_strLastBusinessDayofPreviousMonth]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_LastMonthYear">[out_strLastMonthYear]</OutArgument>
+              <OutArgument x:TypeArguments="x:String" x:Key="out_LastMonthNumber">[out_strLastMonthNumber]</OutArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+          <Assign sap:VirtualizedContainerService.HintSize="372.666666666667,62" sap2010:WorkflowViewState.IdRef="Assign_1">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[lastWorkingDayOfPreviousMonth]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[out_strLastBusinessDayofPreviousMonth]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <If Condition="[in_IsFirstRun = True]" DisplayName="If - in_IsFirstRun = True" sap:VirtualizedContainerService.HintSize="372.666666666667,52.6666666666667" sap2010:WorkflowViewState.IdRef="If_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <Sequence sap:VirtualizedContainerService.HintSize="454.666666666667,890" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="412.666666666667,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_17" UnSafe="False" WorkflowFileName="InitApp\MoveFoldersToArchive.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_OutputArchivePath">[in_Config("OutputArchivePath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_LocalOutputFolder">[in_Config("LocalOutputFolder").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ForexRatesFolderPath">[in_Config("ForexRatesFolderPath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_GRIRSheetLocalPath">[in_Config("GRIRSheetLocalPath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_ICOSheetLocalPath">[in_Config("ICOSheetLocalPath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_OutputGRIRFinalSheetFolderPath">[in_Config("OutputGRIRFinalSheetFolderPath").ToString]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="412.666666666667,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_13" UnSafe="False" WorkflowFileName="InitApp\CopyGRIRTemplate.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_LAP_TemplatePath">[in_Config("LAP_TemplatePath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CAP_CCP_HUP_PRD_TemplatePath">[in_Config("CAP_CCP_HUP_PRD_TemplatePath").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_LAP_TempArchive">[in_Config("LAP_TempArchive").ToString]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="in_CAP_CCP_HUP_PRD_TempArchive">[in_Config("CAP_CCP_HUP_PRD_TempArchive").ToString]</InArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:ForEach x:TypeArguments="x:Object" CurrentIndex="{x:Null}" DisplayName="Login to SAP For Each System" sap:VirtualizedContainerService.HintSize="412.666666666667,544.666666666667" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[arrSapSystem]">
+                  <ui:ForEach.Body>
+                    <ActivityAction x:TypeArguments="x:Object">
+                      <ActivityAction.Argument>
+                        <DelegateInArgument x:TypeArguments="x:Object" Name="item" />
+                      </ActivityAction.Argument>
+                      <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="376,406" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                        <Sequence.Variables>
+                          <Variable x:TypeArguments="x:String" Name="variable1" />
+                        </Sequence.Variables>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;SAP System item - &quot; + item.ToString]" />
+                        <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="InitApp\LoginToSAP.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_SapSystemName">[item.ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_SapLogonExeLocation">[in_Config("SapLogonExeLocation").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCAP">[in_Config("S2P_SAP_SERVICEID_CAP").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameCCP">[in_Config("S2P_SAP_SERVICEID_CCP").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameHUP">[in_Config("S2P_SAP_SERVICEID_HUP").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CredentialNameLAP">[in_Config("S2P_SAP_SERVICEID_LAP").ToString]</InArgument>
+                          </ui:InvokeWorkflowFile.Arguments>
+                        </ui:InvokeWorkflowFile>
+                        <Switch x:TypeArguments="x:String" DisplayName="Switch - Get FXRates For Each SAP Systems" Expression="[item.ToString]" sap:VirtualizedContainerService.HintSize="334,52.6666666666667" sap2010:WorkflowViewState.IdRef="Switch`1_1">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Sequence x:Key="CAP" sap:VirtualizedContainerService.HintSize="376,305.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="InitApp\GetForexRates.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SapSystem">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FromDate">[lastWorkingDayOfPreviousMonth]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFormat">[in_Config("CAPExcelFileExportFormat").ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFileExtension">[in_Config("ExportFileExtension").ToString]</InArgument>
+                                <OutArgument x:TypeArguments="x:String" x:Key="out_FXRatesSheetPath">[fXRatesSheetPath]</OutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ForexRatesFolderPath">[in_Config("ForexRatesFolderPath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="InitApp\CopyFXRatesToTemplate.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FXRatesSheetPath">[fXRatesSheetPath]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SAPSystemName">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_GRIRTemplatePath">[in_Config("CAP_CCP_HUP_PRD_TemplatePath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                          </Sequence>
+                          <Sequence x:Key="CCP" sap:VirtualizedContainerService.HintSize="376,308" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="InitApp\GetForexRates.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SapSystem">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FromDate">[lastWorkingDayOfPreviousMonth]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFormat">[in_Config("CCPExcelFileExportFormat").ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFileExtension">[in_Config("ExportFileExtensionXML").ToString]</InArgument>
+                                <OutArgument x:TypeArguments="x:String" x:Key="out_FXRatesSheetPath">[fXRatesSheetPath]</OutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ForexRatesFolderPath">[in_Config("ForexRatesFolderPath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_9" UnSafe="False" WorkflowFileName="InitApp\CopyFXRatesToTemplate.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FXRatesSheetPath">[fXRatesSheetPath]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SAPSystemName">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_GRIRTemplatePath">[in_Config("CAP_CCP_HUP_PRD_TemplatePath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                          </Sequence>
+                          <Sequence x:Key="HUP" sap:VirtualizedContainerService.HintSize="376,308" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName="InitApp\GetForexRates.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SapSystem">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FromDate">[lastWorkingDayOfPreviousMonth]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFormat">[in_Config("HUPExcelFileExportFormat").ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFileExtension">[in_Config("ExportFileExtension").ToString]</InArgument>
+                                <OutArgument x:TypeArguments="x:String" x:Key="out_FXRatesSheetPath">[fXRatesSheetPath]</OutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ForexRatesFolderPath">[in_Config("ForexRatesFolderPath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_10" UnSafe="False" WorkflowFileName="InitApp\CopyFXRatesToTemplate.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FXRatesSheetPath">[fXRatesSheetPath]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SAPSystemName">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_GRIRTemplatePath">[in_Config("CAP_CCP_HUP_PRD_TemplatePath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                          </Sequence>
+                          <Sequence x:Key="LAP" sap:VirtualizedContainerService.HintSize="376,308" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="InitApp\GetForexRates.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SapSystem">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FromDate">[lastWorkingDayOfPreviousMonth]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFormat">[in_Config("LAPExcelFileExportFormat").ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFileExtension">[in_Config("ExportFileExtension").ToString]</InArgument>
+                                <OutArgument x:TypeArguments="x:String" x:Key="out_FXRatesSheetPath">[fXRatesSheetPath]</OutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ForexRatesFolderPath">[in_Config("ForexRatesFolderPath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_11" UnSafe="False" WorkflowFileName="InitApp\CopyFXRatesToTemplate.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FXRatesSheetPath">[fXRatesSheetPath]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SAPSystemName">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_GRIRTemplatePath">[in_Config("LAP_TemplatePath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                          </Sequence>
+                          <Sequence x:Key="PRD" sap:VirtualizedContainerService.HintSize="376,308" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="InitApp\GetForexRates.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SapSystem">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FromDate">[lastWorkingDayOfPreviousMonth]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFormat">[in_Config("PRDExcelFileExportFormat").ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ExportFileExtension">[in_Config("ExportFileExtension").ToString]</InArgument>
+                                <OutArgument x:TypeArguments="x:String" x:Key="out_FXRatesSheetPath">[fXRatesSheetPath]</OutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_ForexRatesFolderPath">[in_Config("ForexRatesFolderPath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_12" UnSafe="False" WorkflowFileName="InitApp\CopyFXRatesToTemplate.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_FXRatesSheetPath">[fXRatesSheetPath]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_SAPSystemName">[item.ToString]</InArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_GRIRTemplatePath">[in_Config("CAP_CCP_HUP_PRD_TemplatePath").ToString]</InArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                          </Sequence>
+                        </Switch>
+                      </Sequence>
+                    </ActivityAction>
+                  </ui:ForEach.Body>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:ForEach>
+              </Sequence>
+            </If.Then>
+          </If>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+  </Sequence>
+</Activity>
